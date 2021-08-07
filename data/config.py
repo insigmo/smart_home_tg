@@ -1,9 +1,13 @@
+import os
+
 from environs import Env
 
 env = Env()
 env.read_env()
 
-BOT_TOKEN = env.str("BOT_TOKEN")
-ADMINS = env.list("ADMINS")
-IP = env.str("ip")
-SMART_BULB_TOKEN = env.str('smart_bulb_token')
+
+class Variables:
+    bot_token = os.environ["BOT_TOKEN"]
+    admin = os.environ["ADMIN"]
+    ip = os.environ["IP"]
+    smart_bulb_token1 = os.environ['SMART_BULB_TOKEN1']
