@@ -3,7 +3,9 @@ from environs import Env
 env = Env()
 env.read_env()
 
-BOT_TOKEN = env.str("BOT_TOKEN")
-ADMINS = env.list("ADMINS")
-IP = env.str("ip")
-SMART_BULB_TOKEN = env.str('smart_bulb_token')
+
+class Variables:
+    bot_token = env("BOT_TOKEN")
+    admin = env("ADMIN")
+    ip = env("IP")
+    smart_bulb_token1 = env('SMART_BULB_TOKEN')

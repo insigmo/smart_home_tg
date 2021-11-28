@@ -1,14 +1,12 @@
-import logging
-
 from aiogram import Dispatcher
 
-from data.config import ADMINS
+from data.config import Variables
+from utils.misc.logging import logger
 
 
 async def on_startup_notify(dp: Dispatcher):
-    for admin in ADMINS:
-        try:
-            await dp.bot.send_message(admin, "Бот Запущен")
+    try:
+        await dp.bot.send_message(Variables.admin, "Бот Запущен")
 
-        except Exception as err:
-            logging.exception(err)
+    except Exception as err:
+        logger.exception(err)
