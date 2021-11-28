@@ -7,5 +7,4 @@ def callback(channel, method, properties, body):
 
 if __name__ == '__main__':
     r = PyRabbit()
-
     r.get_message(callback)

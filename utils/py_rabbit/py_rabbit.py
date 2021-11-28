@@ -1,4 +1,4 @@
-import pika as pika
+import pika
 
 
 class PyRabbit:
@@ -10,49 +10,23 @@ class PyRabbit:
         self.exchange_name = kwargs.pop('exchange_name', 'first_exchange')
         self.exchange_type = 'topic'
 
-        self.__exchange = None
-        self.__queue = None
-        self.__channel = None
-        self.connection = None
+        self.connection = self.create_connection(self.hostname, self.port)
+        self.channel = self.connection.channel()
+        self.exchange = self.create_exchange(self.exchange_name, exchange_type=self.exchange_type)
+        self.queue = self.create_queue(self.queue_name)
 
-        self.create_queue(self.queue_name)
-        self.create_exchange(self.exchange_name, self.exchange_type)
         self.queue_bind()
+
+    @classmethod
+    def create_connection(cls, hostname: str, port: int):
+        conn_params = pika.ConnectionParameters(hostname, port)
+        return pika.BlockingConnection(conn_params)
 
     def create_queue(self, queue_name: str):
         return self.channel.queue_declare(queue_name)
 
     def create_exchange(self, exchange_name: str, exchange_type: str):
         return self.channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type)
-
-    @property
-    def channel(self):
-        if self.__channel:
-            return self.__channel
-
-        conn_params = pika.ConnectionParameters(self.hostname, self.port)
-        self.connection = pika.BlockingConnection(conn_params)
-        self.__channel = self.connection.channel()
-
-        return self.__channel
-
-    @property
-    def queue(self):
-        if self.__queue:
-            return self.__queue
-
-        self.__queue = self.create_queue(self.queue_name)
-
-        return self.__queue
-
-    @property
-    def exchange(self):
-        if self.__exchange:
-            return self.__exchange
-
-        self.__exchange = self.create_exchange(self.exchange_name, exchange_type=self.exchange_type)
-
-        return self.__exchange
 
     def queue_bind(self):
         self.channel.queue_bind(queue=self.queue_name, exchange=self.exchange_name, routing_key=self.key)
@@ -92,10 +66,3 @@ class PyRabbit:
 
     def __del__(self):
         self.connection.close()
-
-
-if __name__ == '__main__':
-    rabbit = PyRabbit()
-    for _ in range(100):
-        rabbit.send_message('Hey there')
-    rabbit.send_message()
