@@ -129,6 +129,8 @@ dmypy.json
 .pyre/
 .idea/*
 .env
+chern*
+*.db
 portaudio
 *pkl
 *h5
