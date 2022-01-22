@@ -2,7 +2,7 @@ from py_rabbit import PyRabbit
 
 
 def callback(channel, method, properties, body):
-    print(body)
+    print(body.decode('utf-8'))
 
 
 if __name__ == '__main__':

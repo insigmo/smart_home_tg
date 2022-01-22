@@ -6,7 +6,7 @@ class PyRabbit:
         self.hostname = kwargs.pop('hostname', 'localhost')
         self.port = kwargs.pop('port', 5672)
         self.key = kwargs.pop('key', 'key*')  # key.example.* or key.example.#
-        self.queue_name = kwargs.pop('queue_name', 'first-queue')
+        self.queue_name = kwargs.pop('queue_name', 'first_queue')
         self.exchange_name = kwargs.pop('exchange_name', 'first_exchange')
         self.exchange_type = 'topic'
 
@@ -23,10 +23,10 @@ class PyRabbit:
         return pika.BlockingConnection(conn_params)
 
     def create_queue(self, queue_name: str):
-        return self.channel.queue_declare(queue_name)
+        return self.channel.queue_declare(queue_name, durable=True)
 
     def create_exchange(self, exchange_name: str, exchange_type: str):
-        return self.channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type)
+        return self.channel.exchange_declare(exchange=exchange_name, exchange_type=exchange_type, durable=True)
 
     def queue_bind(self):
         self.channel.queue_bind(queue=self.queue_name, exchange=self.exchange_name, routing_key=self.key)
@@ -34,8 +34,8 @@ class PyRabbit:
     def send_message(self, text: str, **kwargs):
         exchange: str = kwargs.pop('exchange', self.exchange_name)
         key: str = kwargs.pop('key', self.key)
-
-        self.channel.basic_publish(exchange=exchange, routing_key=key, body=text)
+        properties = pika.BasicProperties(delivery_mode=2)
+        self.channel.basic_publish(exchange=exchange, routing_key=key, body=text.encode(), properties=properties)
 
     def get_message(self, callback, **kwargs):
         queue_name = kwargs.pop('queue_name', self.queue_name)
@@ -48,8 +48,9 @@ class PyRabbit:
         except KeyboardInterrupt:
             self.channel.stop_consuming()
 
-        except Exception:
+        except Exception as ex:
             self.channel.stop_consuming()
+            print(ex)
 
     @staticmethod
     def callback(channel, method, properties, body):

@@ -46,9 +46,7 @@ class TapDetector:
             n = sample * SHORT_NORMALIZE
             sum_squares += n * n
 
-        rms = math.sqrt(sum_squares / count)
-        logger.info(f'{rms=}')
-        return rms
+        return math.sqrt(sum_squares / count)
 
     def tap_detected(self):
         self.smart_bulb.switch()

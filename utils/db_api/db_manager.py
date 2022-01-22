@@ -2,13 +2,14 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from data.config import Variables
 from utils.constants.devices import Devices
 from utils.db_api.tables import Base, DeviceTable
 
 
 class DBManager:
     def __init__(self):
-        self.db_file_path = 'device_data.db'
+        self.db_file_path = f'{Variables.root_dir}/data/device_data.db'
         self.engine = create_engine(f'sqlite:///{self.db_file_path}')
         self.session = None
         self._create_session()

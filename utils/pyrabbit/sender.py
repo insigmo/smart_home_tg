@@ -1,10 +1,5 @@
-from time import sleep
-
 from py_rabbit import PyRabbit
 
 if __name__ == '__main__':
-    r = PyRabbit()
-    for _ in range(100):
-        r.send_message('Hey there')
-        print('Message sent')
-        sleep(2)
+    r = PyRabbit(hostname='192.168.1.5')
+    r.send_message('Hey there')

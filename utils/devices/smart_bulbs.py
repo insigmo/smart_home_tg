@@ -52,5 +52,5 @@ class SmartBulbs:
 
 if __name__ == '__main__':
     s = SmartBulbs()
-    # s.add_bulb(ip_address='192.168.1.7', token='3d30dda82fac2d2d8e7d4cfc62315070')
+    s.add_bulb(ip_address='192.168.1.7', token='3d30dda82fac2d2d8e7d4cfc62315070')
     s.turn_off()
